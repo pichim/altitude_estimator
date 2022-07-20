@@ -9,12 +9,12 @@ make: *** No rule to make target 'all'.  Stop.
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Tue Jul 19 16:57:54 2022
+# Make data base, printed on Wed Jul 20 11:59:45 2022
 
 # Variables
- 
 
 # environment
+ 
 FPS_BROWSER_APP_PROFILE_STRING = Internet Explorer
 # environment
 SYSTEMDRIVE = C:
@@ -41,11 +41,11 @@ USERDNSDOMAIN = ZHAW.CH
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_26316_JBSWJSLVUMALMWJW
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_29404_DRCZVSGEVRVJSGBI
 # environment
 ONEDRIVECOMMERCIAL = E:\pmic\OneDrive - ZHAW
 # environment
-!E: = e:\privat\Dropbox\fpv_drone\00_quads\GIT_repositories\chirp
+!E: = e:\privat\Dropbox\fpv_drone\00_quads\GIT_repositories\altitude_estimator
 # environment
 FPS_BROWSER_USER_PROFILE_STRING = Default
 # environment
@@ -59,7 +59,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = C:\Users\pmic\AppData\Roaming\Code\CachedData\b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
+VSCODE_CODE_CACHE_PATH = C:\Users\pmic\AppData\Roaming\Code\CachedData\3b889b090b5ad5793f524b5d1d39fda662b96a2a
 # environment
 LANG = C
 # default
@@ -75,19 +75,19 @@ MAKEFLAGS = pqrR
 # environment
 ONEDRIVE = E:\pmic\OneDrive - ZHAW
 # makefile
-CURDIR := /cygdrive/e/privat/Dropbox/fpv_drone/00_quads/GIT_repositories/chirp
+CURDIR := /cygdrive/e/privat/Dropbox/fpv_drone/00_quads/GIT_repositories/altitude_estimator
 # environment
 CADENAS_DATA = \\srv-lab-t-432\cadenas\data
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
- 
 *D = $(patsubst %/,%,$(dir $*))
 # environment
 PROGRAMFILES = C:\Program Files
 # environment
 MFLAGS = -pqrR
 # default
+ 
 .SHELLFLAGS := -c
 # environment
 COMMONPROGRAMW6432 = C:\Program Files\Common Files
@@ -100,7 +100,7 @@ MAKEFILE_LIST :=
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 26316
+VSCODE_PID = 29404
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
@@ -120,7 +120,7 @@ PROGRAMDATA = C:\ProgramData
 # default
 SHELL := /bin/sh
 # environment
-HOMEPATH = \Users\pmic
+HOMEPATH = \
 # default
 MAKECMDGOALS := all
 # environment
@@ -156,17 +156,19 @@ PROMPT = $P$G
 # environment
 NIDAQMXSWITCHDIR = C:\Program Files (x86)\National Instruments\NI-DAQ\Switch\
 # environment
-LOGONSERVER = \\SRV-DC-101
+LOGONSERVER = \\SRV-DC-003
 # environment
 USERNAME = pmic
+# environment
+HOMESHARE = \\user.zhaw.ch\staff\pmic
 # environment
 COMMONPROGRAMFILES = C:\Program Files\Common Files
 # automatic
 ?F = $(notdir $?)
 # environment
 PROGRAMW6432 = C:\Program Files
-# environment
  
+# environment
 PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
 # automatic
 +F = $(notdir $+)
@@ -199,7 +201,7 @@ MOZ_PLUGIN_PATH = C:\Program Files\Tracker Software\PDF Viewer\Win32\
 # environment
 APPDATA = C:\Users\pmic\AppData\Roaming
 # environment
-HOMEDRIVE = C:
+HOMEDRIVE = u:
 # environment
 PROCESSOR_ARCHITECTURE = AMD64
 # environment
@@ -217,12 +219,13 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 TEMP = /cygdrive/c/Users/pmic/AppData/Local/Temp
 # environment
-VSCODE_IPC_HOOK = \\.\pipe\9e44328df26aa09207e4fda0be1b5437-1.69.1-main-sock
+VSCODE_IPC_HOOK = \\.\pipe\9e44328df26aa09207e4fda0be1b5437-1.69.2-main-sock
 # environment
 TERM = xterm-256color
 # default
 .RECIPEPREFIX := 
 # automatic
+ 
 <F = $(notdir $<)
 # default
 SUFFIXES := 
@@ -230,7 +233,6 @@ SUFFIXES :=
 ALLUSERSPROFILE = C:\ProgramData
 # environment
 CADENAS = \\srv-lab-t-432\cadenas\software
- 
 # environment
 SESSIONNAME = Console
 # environment
@@ -242,7 +244,7 @@ PROCESSOR_REVISION = 9e09
 # environment
 PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 158 Stepping 9, GenuineIntel
 # variable set hash-table stats:
-# Load=112/1024=11%, Rehash=0, Collisions=10/136=7%
+# Load=113/1024=11%, Rehash=0, Collisions=10/137=7%
 
 # Pattern-specific Variable Values
 
@@ -250,11 +252,12 @@ PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 158 Stepping 9, GenuineIntel
 
 # Directories
 
-# . (device 1551566500, inode 1344887438723519361): 9 files, no impossibilities.
+# . (device 1551566500, inode 5910974511122043): 9 files, no impossibilities.
 
 # 9 files, no impossibilities in 1 directories.
 
 # Implicit Rules
+ 
 
 # No implicit rules.
 
@@ -302,13 +305,13 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
- 
 # strcache buffers: 1 (0) / strings = 16 / storage = 123 B / avg = 7 B
 # current buf: size = 8162 B / used = 123 B / count = 16 / avg = 7 B
 
 # strcache performance: lookups = 19 / hit rate = 15%
 # hash-table stats:
+ 
 # Load=16/8192=0%, Rehash=0, Collisions=0/19=0%
-# Finished Make data base on Tue Jul 19 16:57:54 2022
+# Finished Make data base on Wed Jul 20 11:59:45 2022
 
  

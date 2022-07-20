@@ -8,12 +8,11 @@
 			"args": [
 				"-I${workspaceFolder}\\include",
 				"-fdiagnostics-color=always",
-				"-g",
-				"${workspaceFolder}\\*.cpp",
-				"${workspaceFolder}\\src\\*.cpp",
+				"-g", 
+				"${workspaceFolder}\\*.cpp", //"${workspaceFolder}\\src\\*.cpp",
 				"${workspaceFolder}\\src\\*.c",
 				"-o",
-				"${workspaceFolder}\\output\\chirp.exe"
+				"${workspaceFolder}\\output\\altitude_estimator.exe"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
