@@ -1,0 +1,6 @@
+make.exe --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/cygdrive/e/privat/Dropbox/fpv_drone/00_quads/GIT_repositories/chirp'
+make: Leaving directory '/cygdrive/e/privat/Dropbox/fpv_drone/00_quads/GIT_repositories/chirp'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
