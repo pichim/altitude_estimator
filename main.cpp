@@ -2,19 +2,24 @@
 #include <fstream>
 #include <chrono>
 #include <stdint.h>
+#include <math.h>
 
-#include "altitude_estimator.h"
+#include "maths.h"
+#include "position_estimator.h"
 
 int main(int argc, char *argv[])
 {
-    float Ts = 0.02f;
-    float w1 = 1.2566371f;
-    float w2 = 1.2566371f;
-    float D2 = 1.0000000f;
-    float wa = 0.0f;
-    float posDiscreteDelay = 5;
-    altitudeEstimator_t altitudeEstimator;
-    altitudeEstimatorSetup(&altitudeEstimator, Ts, w1, w2, D2, wa, posDiscreteDelay);
+    float dT = 0.02f;
+    float f_cut = 0.1019649f;
+    positionEstimator_t positionEstimator;
+    positionEstimatorSetupPt3(&positionEstimator, f_cut);
+    //float filterFreq1 = f_cut * 1.9614592f;
+    //float filterFreq2 = f_cut * 1.9614592f;
+    //float Q2 = 0.5f;
+    //float fa = 0.0f;
+    //uint8_t positionDiscreteDelay = 0;
+    //positionEstimatorUpdateCutoff(&positionEstimator, filterFreq1, filterFreq2, Q2, fa);
+    //positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, positionDiscreteDelay);
 
     float acc[10][3] = {-0.000670582056046, 0.000957667827606, 9.695039749145508,
                         0.018489569425583, 0.010537743568420, 9.647139549255371,
@@ -52,19 +57,33 @@ int main(int argc, char *argv[])
     uint32_t cntr = 0;
 
     // open file for writing
-    std::ofstream datafile("output/altitude_estimator_00.txt");
+    std::ofstream datafile("output/position_estimator_00.txt");
 
     bool main_execute = true;
     while (main_execute) {
         std::chrono::steady_clock::time_point time_begin = std::chrono::steady_clock::now();
-        altitudeEstimatorUpdate(&altitudeEstimator, acc[cntr][0], acc[cntr][1], acc[cntr][2], baro[cntr], est_rpy[cntr][0], est_rpy[cntr][1]);
+
+        // carefull here:  bf applyMatrixRotation is in a different convention! i think negative angles, i knew this once, need to doublecheck
+        /* CEB =
+        [cos(psi)*cos(theta), cos(psi)*sin(phi)*sin(theta) - cos(phi)*sin(psi), sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta)]
+        [cos(theta)*sin(psi), cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta), cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi)]
+        [        -sin(theta),                              cos(theta)*sin(phi),                              cos(phi)*cos(theta)]
+        */
+        // remove acc bias from accZ in body frame and transform to accZ w.r.t. earth frame
+        float accZ = -sin_approx(est_rpy[cntr][1])*acc[cntr][0] 
+            + cos_approx(est_rpy[cntr][1])*sin_approx(est_rpy[cntr][0])*acc[cntr][1]
+            + cos_approx(est_rpy[cntr][0])*cos_approx(est_rpy[cntr][1])*( acc[cntr][2] - positionEstimator.state[2] );
+        // remove gravity to get the acceleration that acts in positive z direction w.r.t earth frame
+        accZ -= 9.81f;
+        positionEstimatorApply(&positionEstimator, accZ, baro[cntr], dT);
+
         std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
         int64_t time_elapsed_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_begin).count();
         //cntr++;
         if (cntr++ < 10)
         {
-            std::cout << cntr << ", " << altitudeEstimator.x[0] << ", " << altitudeEstimator.x[1] << ", " << altitudeEstimator.x[2] << ", " << time_elapsed_ns << std::endl;
-            datafile << cntr << ", " << altitudeEstimator.x[0] << ", " << altitudeEstimator.x[1] << ", " << altitudeEstimator.x[2] << ", " << time_elapsed_ns << std::endl;
+            std::cout << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
+            datafile << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
         }
         else
         {

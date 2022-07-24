@@ -12,7 +12,7 @@
 				"${workspaceFolder}\\*.cpp", //"${workspaceFolder}\\src\\*.cpp",
 				"${workspaceFolder}\\src\\*.c",
 				"-o",
-				"${workspaceFolder}\\output\\altitude_estimator.exe"
+				"${workspaceFolder}\\output\\position_estimator.exe"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
