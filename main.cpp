@@ -10,80 +10,88 @@
 int main(int argc, char *argv[])
 {
     float dT = 0.02f;
-    float f_cut = 0.1019649f;
+    float f_a = 0.01f;
+    float f_cut = 0.1f;
+    uint8_t nd_pos = 3;
     positionEstimator_t positionEstimator;
-    positionEstimatorSetupPt3(&positionEstimator, f_cut);
-    //float filterFreq1 = f_cut * 1.9614592f;
-    //float filterFreq2 = f_cut * 1.9614592f;
-    //float Q2 = 0.5f;
-    //float fa = 0.0f;
-    //uint8_t positionDiscreteDelay = 0;
-    //positionEstimatorUpdateCutoff(&positionEstimator, filterFreq1, filterFreq2, Q2, fa);
-    //positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, positionDiscreteDelay);
+    positionEstimatorUpdateGain(&positionEstimator, f_cut, f_a, dT);
+    positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, nd_pos);
 
-    float acc[10][3] = {-0.000670582056046, 0.000957667827606, 9.695039749145508,
-                        0.018489569425583, 0.010537743568420, 9.647139549255371,
-                        0.008909493684769, -0.008622407913208, 9.637558937072754,
-                        0.018489569425583, 0.010537743568420, 9.637558937072754,
-                        0.008909493684769, 0.010537743568420, 9.637558937072754,
-                        0.018489569425583, 0.010537743568420, 9.637558937072754,
-                        0.008909493684769, 0.000957667827606, 9.647139549255371,
-                        0.008909493684769, 0.010537743568420, 9.637558937072754,
-                        -0.000670582056046, -0.008622407913208, 9.647139549255371,
-                        0.008909493684769, 0.000957667827606, 9.627979278564453};
+    std::cout << " --- G ---" << std::endl;
+    // positionEstimator->position = position_k + positionEstimator->a12 * velocity_k                                      + positionEstimator->dT * positionEstimator->a12 * u1 + positionEstimator->k1 * u2;
+    // positionEstimator->velocity =              positionEstimator->a22 * velocity_k                                      + positionEstimator->dT * positionEstimator->a22 * u1 + positionEstimator->k2 * u2;
+    // positionEstimator->accBias =               positionEstimator->a32 * velocity_k + positionEstimator->a33 * accBias_k + positionEstimator->dT * positionEstimator->a32 * u1 + positionEstimator->k3 * u2;
+    std::cout << 1 << ", " << positionEstimator.a12 << ", " <<                     0 << ", " << positionEstimator.dT * positionEstimator.a12 << ", " << positionEstimator.k1 << std::endl;
+    std::cout << 0 << ", " << positionEstimator.a22 << ", " <<                     0 << ", " << positionEstimator.dT * positionEstimator.a22 << ", " << positionEstimator.k2 << std::endl;
+    std::cout << 0 << ", " << positionEstimator.a32 << ", " << positionEstimator.a33 << ", " << positionEstimator.dT * positionEstimator.a32 << ", " << positionEstimator.k3 << std::endl;
+    
+    float acc[10][3] = {-0.000257140562159,  0.001285724628871, 2.349525803562698,
+                        -0.000848143575505,  0.001902953988124, 7.742581336210291,
+                        -0.003351659043102, -0.004979671157791, 9.235621230364092,
+                        -0.006420034714341, -0.014031958667323, 9.521973231718768,
+                        -0.002558909315191, -0.018844881751511, 9.580155420965871,
+                        -0.001353664220325, -0.012988037832677, 9.604819002434644,
+                         0.001231659968945, -0.006468956699479, 9.603649226166686,
+                         0.006648759220139, -0.004724804800184, 9.602717604278396,
+                         0.003486611537764,  0.000293380126959, 9.595451925103136,
+                        -0.006958540400100,  0.004085750011728, 9.598045605586460};
 
-    float baro[10] = {-0.416809082031250,
-                      -0.637451171875000,
-                      -0.637451171875000,
-                      -0.504852294921875,
-                      -0.504852294921875,
-                      -0.505126953125000,
-                      -0.505126953125000,
-                      -0.681701660156250,
-                      -0.681701660156250,
-                      -0.505126953125000};
+    float baro[10] = {-0.009782689670254,
+                      -0.053625560591952,
+                      -0.109018738313538,
+                      -0.123976722835630,
+                      -0.126801293146205,
+                      -0.148636878848532,
+                      -0.197803083656959,
+                      -0.158299006762922,
+                      -0.038591423628320,
+                      -0.004736179887408};
 
-    float est_rpy[10][3] = {-0.000027377293009, -0.000003089276106, -0.000025992456358,
-                            -0.000044101929234, 0.000052410850913, -0.000030681145290,
-                            -0.000028863129046, 0.000038669422793, -0.000010648071111,
-                            0.000002565495379, 0.000072978378739, 0.000008982236068,
-                            -0.000026080982934, 0.000133628986077, -0.000017334623408,
-                            0.000006878058684, 0.000116625829833, -0.000005359741408,
-                            0.000232226171647, 0.000023925575078, -0.000015440193238,
-                            0.000434604473412, -0.000243514848989, -0.000087071479356,
-                            0.000716522976290, -0.000686427985784, -0.000106513150968,
-                            0.000748570892029, -0.001031362684444, -0.000120513854199};
+    float est_rpy[10][3] = { 0.041758361476241, -0.058642777730711,  0.060613539972110,
+                             0.008951534255175,  0.005222202162258,  0.004050674760947,
+                             0.002768863396341,  0.015821724446141, -0.027824047720060,
+                            -0.003265461145929, -0.021485197066795,  0.005150544438948,
+                             0.017439821021981, -0.058641417126637, -0.028308715627645,
+                             0.031977062462829, -0.025539040507283, -0.053970084991306,
+                             0.145460930070840, -0.058847843320109, -0.096178060630336,
+                             0.218763307202607, -0.156554131535813, -0.158050315803848,
+                             0.388234155252576, -0.295557547360659, -0.197181303519756,
+                             0.495851389132440, -0.514213752467185, -0.210484111448750};
+    for (size_t i = 0; i < 10; i++) {
+        for (size_t j = 0; j < 3; j++) {
+            est_rpy[i][j] = est_rpy[i][j] * 1.0e-3f;
+        }
+    }
 
     uint32_t cntr = 0;
 
     // open file for writing
     std::ofstream datafile("output/position_estimator_00.txt");
 
+    std::cout << " --- states ---" << std::endl;
+
     bool main_execute = true;
     while (main_execute) {
         std::chrono::steady_clock::time_point time_begin = std::chrono::steady_clock::now();
 
-        // carefull here:  bf applyMatrixRotation is in a different convention! i think negative angles, i knew this once, need to doublecheck
-        /* CEB =
-        [cos(psi)*cos(theta), cos(psi)*sin(phi)*sin(theta) - cos(phi)*sin(psi), sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta)]
-        [cos(theta)*sin(psi), cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta), cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi)]
-        [        -sin(theta),                              cos(theta)*sin(phi),                              cos(phi)*cos(theta)]
-        */
+        // CEB = [cos(psi)*cos(theta), cos(psi)*sin(phi)*sin(theta) - cos(phi)*sin(psi), sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta)]
+        //       [cos(theta)*sin(psi), cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta), cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi)]
+        //       [        -sin(theta),                              cos(theta)*sin(phi),                              cos(phi)*cos(theta)]
         // remove acc bias from accZ in body frame and transform to accZ w.r.t. earth frame
-        float accZ = -sin_approx(est_rpy[cntr][1])*acc[cntr][0] 
-            + cos_approx(est_rpy[cntr][1])*sin_approx(est_rpy[cntr][0])*acc[cntr][1]
-            + cos_approx(est_rpy[cntr][0])*cos_approx(est_rpy[cntr][1])*( acc[cntr][2] - positionEstimator.state[2] );
+        float accZ = -sin_approx(est_rpy[cntr][1]) * acc[cntr][0] 
+            + cos_approx(est_rpy[cntr][1]) * sin_approx(est_rpy[cntr][0]) * acc[cntr][1]
+            + cos_approx(est_rpy[cntr][0]) * cos_approx(est_rpy[cntr][1]) * (acc[cntr][2] - positionEstimator.a33 * positionEstimator.accBias);
         // remove gravity to get the acceleration that acts in positive z direction w.r.t earth frame
         accZ -= 9.81f;
-        positionEstimatorApply(&positionEstimator, accZ, baro[cntr], dT);
+        positionEstimatorApply(&positionEstimator, accZ, baro[cntr]);
 
         std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
         int64_t time_elapsed_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_begin).count();
-        //cntr++;
+        
         if (cntr++ < 10)
         {
-            std::cout << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
-            datafile << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
+            std::cout << cntr << ", " << positionEstimator.position << ", " << positionEstimator.velocity << ", " << positionEstimator.accBias << ", " << time_elapsed_ns << std::endl;
+            datafile << cntr << ", " << positionEstimator.position << ", " << positionEstimator.velocity << ", " << positionEstimator.accBias << ", " << time_elapsed_ns << std::endl;
         }
         else
         {
