@@ -9,17 +9,17 @@
 
 int main(int argc, char *argv[])
 {
-    float dT = 0.02f;
-    float f_cut = 0.1019649f;
+    const float dT = 0.02f;
+    const float f_cut = 0.2f;
+    const float filterFreq1 = f_cut;
+    const float filterFreq2 = f_cut;
+    float Q2 = 1.25f;
+    float f_a = 0.05f;
+    uint8_t positionDiscreteDelay = 7;
     positionEstimator_t positionEstimator;
-    positionEstimatorSetupPt3(&positionEstimator, f_cut);
-    //float filterFreq1 = f_cut * 1.9614592f;
-    //float filterFreq2 = f_cut * 1.9614592f;
-    //float Q2 = 0.5f;
-    //float fa = 0.0f;
-    //uint8_t positionDiscreteDelay = 0;
-    //positionEstimatorUpdateCutoff(&positionEstimator, filterFreq1, filterFreq2, Q2, fa);
-    //positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, positionDiscreteDelay);
+    //positionEstimatorUpdateGainComplexPoles(&positionEstimator, filterFreq1, filterFreq2, Q2, f_a);
+    positionEstimatorUpdateGain(&positionEstimator, f_cut, f_a);
+    positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, positionDiscreteDelay);
 
     float acc[10][3] = {-0.000670582056046, 0.000957667827606, 9.695039749145508,
                         0.018489569425583, 0.010537743568420, 9.647139549255371,
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         // remove acc bias from accZ in body frame and transform to accZ w.r.t. earth frame
         float accZ = -sin_approx(est_rpy[cntr][1])*acc[cntr][0] 
             + cos_approx(est_rpy[cntr][1])*sin_approx(est_rpy[cntr][0])*acc[cntr][1]
-            + cos_approx(est_rpy[cntr][0])*cos_approx(est_rpy[cntr][1])*( acc[cntr][2] - positionEstimator.state[2] );
+            + cos_approx(est_rpy[cntr][0])*cos_approx(est_rpy[cntr][1])*( acc[cntr][2] - positionEstimator.accBias );
         // remove gravity to get the acceleration that acts in positive z direction w.r.t earth frame
         accZ -= 9.81f;
         positionEstimatorApply(&positionEstimator, accZ, baro[cntr], dT);
@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
         //cntr++;
         if (cntr++ < 10)
         {
-            std::cout << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
-            datafile << cntr << ", " << positionEstimator.state[0] << ", " << positionEstimator.state[1] << ", " << positionEstimator.state[2] << ", " << time_elapsed_ns << std::endl;
+            std::cout << cntr << ", " << positionEstimator.position << ", " << positionEstimator.velocity << ", " << positionEstimator.accBias << ", " << time_elapsed_ns << std::endl;
+            datafile << cntr << ", " << positionEstimator.position<< ", " << positionEstimator.velocity << ", " << positionEstimator.accBias << ", " << time_elapsed_ns << std::endl;
         }
         else
         {
