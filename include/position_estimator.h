@@ -25,10 +25,9 @@
 #define POSITIONPAST_MAXLEN 41 // positionDiscreteDelay + 1 <= POSITIONPAST_MAXLEN
 
 typedef struct positionEstimator_s {
-    float dT;                                // sampling time
-    float a12, a22, a32, a33;                // filter gains
     float k1, k2, k3;                        // estimator / observer gains
     float position, velocity, accBias;       // estimator / observer states
+    float a33;                               // acc bias dynamics in rad/sec, set this to one for a pure integrator for the state
     uint8_t positionDiscreteDelay;           // discrete delay of position
     float positionPast[POSITIONPAST_MAXLEN]; // past position values
     uint8_t positionPastIndex;               // past position index
@@ -36,4 +35,4 @@ typedef struct positionEstimator_s {
 
 void positionEstimatorUpdateGain(positionEstimator_t *positionEstimator, float f_cut, float f_a, float dT);
 void positionEstimatorInit(positionEstimator_t *positionEstimator, float position, float velocity, float accBias, uint8_t positionDiscreteDelay);
-void positionEstimatorApply(positionEstimator_t *positionEstimator, float acc, float position);
+void positionEstimatorApply(positionEstimator_t *positionEstimator, float acc, float position, float dT);

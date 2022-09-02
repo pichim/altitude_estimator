@@ -10,21 +10,16 @@
 int main(int argc, char *argv[])
 {
     const float dT = 0.02f;
-    const float f_a = 0.0f;
+    const float f_a = 0.00f;
     const float f_cut = 0.1f;
-    const uint8_t nd_pos = 3;
+    const uint8_t nd_pos = 4;
     positionEstimator_t positionEstimator;
     positionEstimatorUpdateGain(&positionEstimator, f_cut, f_a, dT);
     positionEstimatorInit(&positionEstimator, 0.0f, 0.0f, 0.0f, nd_pos);
 
-    std::cout << " --- G ---" << std::endl;
-    // positionEstimator->position = position_k + positionEstimator->a12 * velocity_k                                      + positionEstimator->dT * positionEstimator->a12 * u1 + positionEstimator->k1 * u2;
-    // positionEstimator->velocity =              positionEstimator->a22 * velocity_k                                      + positionEstimator->dT * positionEstimator->a22 * u1 + positionEstimator->k2 * u2;
-    // positionEstimator->accBias =               positionEstimator->a32 * velocity_k + positionEstimator->a33 * accBias_k + positionEstimator->dT * positionEstimator->a32 * u1 + positionEstimator->k3 * u2;
-    std::cout << 1 << ", " << positionEstimator.a12 << ", " <<                     0 << ", " << positionEstimator.dT * positionEstimator.a12 << ", " << positionEstimator.k1 << std::endl;
-    std::cout << 0 << ", " << positionEstimator.a22 << ", " <<                     0 << ", " << positionEstimator.dT * positionEstimator.a22 << ", " << positionEstimator.k2 << std::endl;
-    std::cout << 0 << ", " << positionEstimator.a32 << ", " << positionEstimator.a33 << ", " << positionEstimator.dT * positionEstimator.a32 << ", " << positionEstimator.k3 << std::endl;
-    
+    std::cout << " --- k1, k2, k3, a33 ---" << std::endl;
+    std::cout << positionEstimator.k1 << ", " << positionEstimator.k2 << ", " << positionEstimator.k3 << ", " << positionEstimator.a33 << std::endl;
+        
     float acc[10][3] = {-0.001053720712662,  0.005268692970276,  9.627979278564453,
                         -0.001053720712662, -0.004311382770538,  9.599238395690918,
                         -0.010633796453476, -0.013891458511353,  9.580078125000000,
@@ -36,16 +31,16 @@ int main(int argc, char *argv[])
                         -0.010633796453476,  0.014848768711090,  9.599238395690918,
                         -0.010633796453476, -0.013891458511353,  9.599238395690918};
 
-    float baro[10] = {-0.004699736042421,
-                      -0.032584879266236,
-                      -0.081586452659935,
-                      -0.109091273965032,
-                      -0.120680865284535,
-                      -0.135303794889971,
-                      -0.175326437075895,
-                      -0.173230376064771,
-                      -0.087376019283139,
-                      -0.033925864942545};
+    float baro[10] = {-0.003161716167906,
+                      -0.024221946722348,
+                      -0.066071375198715,
+                      -0.096116602242955,
+                      -0.112605538282958,
+                      -0.127612833485405,
+                      -0.162270035253379,
+                      -0.170602621356987,
+                      -0.107714048545803,
+                      -0.055170473771539};
 
     float est_rpy[10][3] = { 0.041758361476241, -0.058642777730711,  0.060613539972110,
                              0.008951534255175,  0.005222202162258,  0.004050674760947,
@@ -78,12 +73,12 @@ int main(int argc, char *argv[])
         //       [cos(theta)*sin(psi), cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta), cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi)]
         //       [        -sin(theta),                              cos(theta)*sin(phi),                              cos(phi)*cos(theta)]
         // remove acc bias from accZ in body frame and transform to accZ w.r.t. earth frame
-        float accZ = -sin_approx(est_rpy[cntr][1]) * acc[cntr][0] 
-            + cos_approx(est_rpy[cntr][1]) * sin_approx(est_rpy[cntr][0]) * acc[cntr][1]
-            + cos_approx(est_rpy[cntr][0]) * cos_approx(est_rpy[cntr][1]) * (acc[cntr][2] - positionEstimator.a33 * positionEstimator.accBias);
+        float accZ = -sin(est_rpy[cntr][1]) * acc[cntr][0] 
+            + cos(est_rpy[cntr][1]) * sin(est_rpy[cntr][0]) * acc[cntr][1]
+            + cos(est_rpy[cntr][0]) * cos(est_rpy[cntr][1]) * (acc[cntr][2] - positionEstimator.a33 * positionEstimator.accBias);
         // remove gravity to get the acceleration that acts in positive z direction w.r.t earth frame
         accZ -= 9.81f;
-        positionEstimatorApply(&positionEstimator, accZ, baro[cntr]);
+        positionEstimatorApply(&positionEstimator, accZ, baro[cntr], dT);
 
         std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
         int64_t time_elapsed_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_begin).count();
